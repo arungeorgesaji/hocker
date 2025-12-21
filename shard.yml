@@ -1,0 +1,11 @@
+name: hocker
+version: 0.1.0
+authors:
+  - Arun George Saji <arungeorgesaji@gmail.com>
+targets:
+  hocker:
+    main: src/hocker.cr
+  harec:
+    main: src/hocker/runtime/container.cr
+crystal: ">= 1.0.0"
+license: GPL-3.0 
