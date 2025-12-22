@@ -1,5 +1,6 @@
 require "option_parser"
 
+require "../runtime/runtime"
 require "./commands/run"
 require "./commands/ps"
 

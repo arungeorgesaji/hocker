@@ -1,4 +1,4 @@
-require "./cli/main"
+require "./cli/cli"
 
 module Hocker
   VERSION = "0.1.0"
