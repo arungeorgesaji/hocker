@@ -5,7 +5,5 @@ authors:
 targets:
   hocker:
     main: src/hocker.cr
-  harec:
-    main: src/hocker/runtime/container.cr
 crystal: ">= 1.0.0"
 license: GPL-3.0 
