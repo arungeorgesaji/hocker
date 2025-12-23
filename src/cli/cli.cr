@@ -1,8 +1,10 @@
 require "option_parser"
 
 require "../runtime/runtime"
+require "../runtime/container"
 require "./commands/run"
 require "./commands/ps"
+require "./commands/rm"
 
 module Hocker::CLI
   extend self
@@ -15,6 +17,8 @@ module Hocker::CLI
       Commands::Run.run(args[1..])
     when "ps"
       Commands::PS.run
+    when "rm"
+      Commands::RM.run(args[1..])
     when "version", "-v", "--version"
       puts "Hocker v#{Hocker::VERSION}"
     when "help", "-h", "--help", nil
