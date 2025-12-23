@@ -21,38 +21,42 @@ end
 module Hocker::Runtime::Namespace
   extend self
   
-  def create_container(cmd : String, args : Array(String) = [] of String, rootfs : String? = nil)
+  def create_container(container : Hocker::Runtime::Container)
     pid = LibC.fork
-    
+
     if pid == 0
       setup_namespaces()
-      
+
       inner_pid = LibC.fork
-      
+
       if inner_pid == 0
-        if rootfs
-          setup_rootfs(rootfs)
-        end
-        
-        exec_command(cmd, args)
+        setup_rootfs(container.rootfs)
+        exec_command(container.cmd, container.args)
+
       elsif inner_pid > 0
         status = 0
         LibC.waitpid(inner_pid, pointerof(status), 0)
         LibC._exit((status >> 8) & 0xff)
+
       else
         STDERR.puts "Inner fork failed: #{Errno.value}"
         LibC._exit(1)
       end
-      
+
     elsif pid > 0
-      puts "[Parent] Container PID: #{pid}"
-      
+      puts "[Host] Container PID: #{pid}"
+      container.update_pid(pid)
+      container.update_status("running")
+
       status = 0
       LibC.waitpid(pid, pointerof(status), 0)
-      
+
       exit_code = (status >> 8) & 0xff
-      puts "[Parent] Container exited with code: #{exit_code}"
-      
+      container.update_status("stopped")
+      puts "[Host] Container exited with code: #{exit_code}"
+
+      exit_code
+
     else
       raise "Fork failed: #{Errno.value}"
     end
