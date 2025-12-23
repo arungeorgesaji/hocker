@@ -12,6 +12,7 @@ lib LibC
   
   fun fork : Int32
   fun execvp(file : UInt8*, argv : UInt8**) : Int32
+  fun execve(path : UInt8*, argv : UInt8**, envp : UInt8**) : Int32
   fun waitpid(pid : Int32, status : Int32*, options : Int32) : Int32
   fun _exit(status : Int32) : NoReturn
   fun chdir(path : UInt8*) : Int32
@@ -82,13 +83,20 @@ module Hocker::Runtime::Namespace
   
   private def exec_command(cmd : String, args : Array(String))
     argv = Array(Pointer(UInt8)).new(args.size + 2)
-    argv << cmd.to_unsafe
+    argv << cmd.to_unsafe            # argv[0] = full path
     args.each { |arg| argv << arg.to_unsafe }
     argv << Pointer(UInt8).null
-    
-    LibC.execvp(cmd.to_unsafe, argv.to_unsafe)
-    
-    STDERR.puts "execvp failed: #{Errno.value}"
+
+    envp = [
+      "PATH=/bin:/usr/bin".to_unsafe,
+      Pointer(UInt8).null
+    ]
+
+    puts "[Container] Executing: #{cmd}"
+
+    LibC.execve(cmd.to_unsafe, argv.to_unsafe, envp.to_unsafe)
+
+    STDERR.puts "execve failed: #{Errno.value}"
     LibC._exit(1)
   end
 end

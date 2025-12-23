@@ -5,10 +5,11 @@ module Hocker::CLI::Commands::Run
     image = args[0]? || "alpine"
     cmd = args[1]? || "/bin/sh"
     cmd_args = args.size > 2 ? args[2..] : [] of String
+    rootfs_path = "/tmp/hocker-rootfs"
     
     puts "[Run] Creating container with command: #{cmd}"
     
-    rootfs_path = Hocker::Runtime::RootFS.create_test_rootfs
+    rootfs_path = Hocker::Runtime::RootFS.create_minimal_rootfs(rootfs_path)
     
     begin
       Hocker::Runtime::Namespace.create_container(cmd, cmd_args, rootfs_path)
