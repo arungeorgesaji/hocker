@@ -2,7 +2,10 @@ require "option_parser"
 
 require "../runtime/runtime"
 require "../runtime/container"
-require "./commands/run"
+require "./commands/create"
+require "./commands/start"
+require "./commands/exec"
+require "./commands/stop"
 require "./commands/ps"
 require "./commands/rm"
 
@@ -13,10 +16,16 @@ module Hocker::CLI
     command = args.first?
     
     case command
-    when "run"
-      Commands::Run.run(args[1..])
+    when "create"
+      Commands::Create.run(args[1..])
+    when "start"
+      Commands::Start.run(args[1..])
+    when "exec"
+      Commands::Exec.run(args[1..])
     when "ps"
       Commands::PS.run
+    when "stop"
+      Commands::Stop.run(args[1..])
     when "rm"
       Commands::RM.run(args[1..])
     when "version", "-v", "--version"
@@ -35,14 +44,14 @@ module Hocker::CLI
     Hocker - Container runtime in Crystal
     
     Commands:
-      run       Run a container
+      create    Create a new container
+      start     Start a container
+      exec      Execute a command in a running container
+      stop      Stop a running container
       ps        List containers
+      rm        Remove a container
       version   Show version
       help      Show this help
-    
-    Examples:
-      hocker run alpine:latest /bin/sh
-      hocker ps
     HELP
   end
 end

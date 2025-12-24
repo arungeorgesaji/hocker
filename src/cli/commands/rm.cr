@@ -84,7 +84,7 @@ module Hocker::CLI::Commands::RM
         Process.signal(Signal::TERM, container.pid)
         puts "[#{container.id}] Sent SIGTERM"
 
-        sleep 3
+        ::sleep(3.seconds)
 
         if Process.exists?(container.pid)
           Process.signal(Signal::KILL, container.pid)

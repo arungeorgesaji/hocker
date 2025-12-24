@@ -2,7 +2,7 @@ module Hocker::CLI::Commands::Run
   extend self
   
   def run(args)
-    image = "alpine"  
+    #image = "alpine"  
     cmd = "/bin/sh"   
     cmd_args = [] of String
     network_mode = "none"
@@ -123,34 +123,12 @@ module Hocker::CLI::Commands::Run
     container.update_status("stopped")
     puts "[Run] Container #{container_id} stopped"
   end
-  
-  private def find_container(identifier : String) : Hocker::Runtime::Container?
-    Dir.glob(File.join(Hocker::Runtime::Container::CONTAINER_DIR, "*.json")).each do |file|
-      if File.basename(file, ".json")[0..identifier.size-1] == identifier
-        return load_container(file)
-      end
-      
-      if container = load_container(file)
-        if container.name == identifier
-          return container
-        end
-      end
-    end
-    puts "[Run] Container #{identifier} not found"
-    nil
-  end
-  
+   
   private def load_container(file : String) : Hocker::Runtime::Container?
     begin
       Hocker::Runtime::Container.from_json(File.read(file))
     rescue
       nil
     end
-  end
-  
-  private def process_running?(pid : Int32) : Bool
-    Process.exists?(pid)
-  rescue
-    false
   end
 end
