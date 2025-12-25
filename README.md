@@ -29,12 +29,11 @@ hocker start -d web                # -d = run in background
 hocker exec web hostname
 hocker exec web ps aux
 
-# 5. Get an interactive shell in a running container
-hocker exec -i -t web /bin/sh      # -i = interactive, -t = TTY
+# 5. Run an interactive shell in a running container 
+hocker exec web /bin/sh
 
 # 6. Stop a running container
 hocker stop web 
-hocker stop -t 5 web               # wait up to 5 seconds before force kill
 
 # 7. List containers
 hocker ps
