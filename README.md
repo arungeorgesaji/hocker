@@ -18,7 +18,7 @@ help      Show this help message
 ## Examples
 
 ```bash
-# 1. Create a new container named "web" using alpine image with interactive shell
+# 1. Create a new container named "web" image with interactive shell
 hocker create --name web
 
 # 2. Start it 

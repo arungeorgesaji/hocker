@@ -20,15 +20,17 @@ module Hocker::CLI::Commands::Create
         exit(1)
       end
 
-      parser.unknown_args do |unknown|
-        if unknown.size != 1
-          STDERR.puts "ERROR: Exactly one IMAGE is required"
-          STDERR.puts parser
-          exit(1)
-        end
-        image = unknown[0]
-      end
+      #parser.unknown_args do |unknown|
+      #  if unknown.size != 1
+      #    STDERR.puts "ERROR: Exactly one IMAGE is required"
+      #    STDERR.puts parser
+      #    exit(1)
+      #  end
+      #  image = unknown[0]
+      #end
     end
+
+    image ||= "alpine"
 
     unless image
       STDERR.puts "ERROR: IMAGE is required"

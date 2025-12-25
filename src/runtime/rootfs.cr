@@ -78,7 +78,7 @@ module Hocker::Runtime::RootFS
     
     puts "[RootFS] Creating minimal rootfs at: #{path}"
     
-    essential_bins = ["sh", "bash", "ls", "cat", "echo", "pwd", "ps", "mkdir", "rm", "cp", "mv", "touch", "grep", "which", "clear", "ping"]
+    essential_bins = ["sh", "bash", "ls", "cat", "echo", "pwd", "ps", "mkdir", "rm", "cp", "mv", "touch", "grep", "which", "ping"]
     essential_bins.each do |bin|
       bin_path = ["/bin/#{bin}", "/usr/bin/#{bin}", "/sbin/#{bin}"].find { |p| File.file?(p) && File::Info.executable?(p) }
       if bin_path

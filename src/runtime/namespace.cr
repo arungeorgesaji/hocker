@@ -21,7 +21,7 @@ end
 module Hocker::Runtime::Namespace
   extend self
   
-  def create_container(container : Hocker::Runtime::Container)
+  def start_container(container : Hocker::Runtime::Container, detach : Bool = false)
     pid = LibC.fork
 
     if pid == 0
@@ -34,9 +34,13 @@ module Hocker::Runtime::Namespace
         exec_command(container.cmd, container.args)
 
       elsif inner_pid > 0
-        status = 0
-        LibC.waitpid(inner_pid, pointerof(status), 0)
-        LibC._exit((status >> 8) & 0xff)
+        if detach
+          LibC._exit(0)
+        else
+          status = 0
+          LibC.waitpid(inner_pid, pointerof(status), 0)
+          LibC._exit((status >> 8) & 0xff)
+        end
 
       else
         STDERR.puts "Inner fork failed: #{Errno.value}"
@@ -48,14 +52,19 @@ module Hocker::Runtime::Namespace
       container.update_pid(pid)
       container.update_status("running")
 
-      status = 0
-      LibC.waitpid(pid, pointerof(status), 0)
+      if detach
+        puts "[Host] Container running in background"
+        return 0
+      else
+        status = 0
+        LibC.waitpid(pid, pointerof(status), 0)
 
-      exit_code = (status >> 8) & 0xff
-      container.update_status("stopped")
-      puts "[Host] Container exited with code: #{exit_code}"
+        exit_code = (status >> 8) & 0xff
+        container.update_status("stopped")
+        puts "[Host] Container exited with code: #{exit_code}"
 
-      exit_code
+        return exit_code
+      end
 
     else
       raise "Fork failed: #{Errno.value}"
@@ -87,7 +96,7 @@ module Hocker::Runtime::Namespace
   
   private def exec_command(cmd : String, args : Array(String))
     argv = Array(Pointer(UInt8)).new(args.size + 2)
-    argv << cmd.to_unsafe            # argv[0] = full path
+    argv << cmd.to_unsafe            
     args.each { |arg| argv << arg.to_unsafe }
     argv << Pointer(UInt8).null
 

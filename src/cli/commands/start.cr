@@ -59,21 +59,12 @@ module Hocker::CLI::Commands::Start
 
     puts "Starting container #{container.id[0..11]}..."
 
-    exit_code = Hocker::Runtime::Namespace.create_container(container)
+    exit_code = Hocker::Runtime::Namespace.start_container(container, detach)
 
     if detach
-      ::sleep(0.1.seconds)
-
-      if container.pid > 0 && process_alive?(container.pid)
-        container.update_status("running")
-        container.save
-        puts "Container #{container.id[0..11]} running in background (PID: #{container.pid})"
-      else
-        container.update_status("exited")
-        container.save
-        STDERR.puts "Container #{container.id[0..11]} failed to start"
-        exit(1)
-      end
+      container.update_status("running")
+      container.save
+      puts "Container #{container.id[0..11]} running in background (PID: #{container.pid})"
     else
       container.update_status("exited")
       container.save
@@ -94,16 +85,5 @@ module Hocker::CLI::Commands::Start
       end
     end
     nil  
-  end
-
-  private def process_alive?(pid : Int32) : Bool
-    return false if pid <= 0
-    
-    begin
-      Process.signal(Signal::CONT, pid)
-      true
-    rescue
-      false
-    end
   end
 end
