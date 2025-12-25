@@ -7,7 +7,7 @@ Hocker is a Docker-like container runtime written in Crystal
 ```bash
 create    Create a new container from an image
 start     Start a container
-exec      Run a command inside a running container
+exec      Run a command inside a running container(Feature not implemented completely)
 stop      Stop a running container
 rm        Remove a stopped container
 ps        List all containers
@@ -25,11 +25,11 @@ hocker create --name web
 hocker start web    # Start in foreground. 'exit' to stop.
 hocker start -d web                # -d = run in background
 
-# 4. Run commands in a running container
+# 4. Run commands in a running container(Feature not implemented completely)
 hocker exec web hostname
 hocker exec web ps aux
 
-# 5. Run an interactive shell in a running container 
+# 5. Run an interactive shell in a running container(Feature not implemented completely) 
 hocker exec web /bin/sh
 
 # 6. Stop a running container

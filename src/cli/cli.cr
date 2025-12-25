@@ -46,7 +46,7 @@ module Hocker::CLI
     Commands:
       create    Create a new container
       start     Start a container
-      exec      Execute a command in a running container
+      exec      Execute a command in a running container(Coming Soon)
       stop      Stop a running container
       ps        List containers
       rm        Remove a container
